@@ -32,7 +32,8 @@ namespace ProgrammersBlog.Services.Concrete
             article.ModifiedByName = createdByName;
             article.UserId = 1;
 
-            await _unitOfWork.Articles.AddAsync(article).ContinueWith(t => _unitOfWork.SaveAsync());
+            await _unitOfWork.Articles.AddAsync(article);
+            await _unitOfWork.SaveAsync();
             return new Result(ResultStatus.Success, $"{articleAddDto.Title} başlıklı makale başarıyla eklendi");
         }
 
@@ -45,7 +46,8 @@ namespace ProgrammersBlog.Services.Concrete
                 article.ModifiedByName = modifiedByName;
                 article.ModifiedDate = DateTime.Now;
                 article.IsDeleted = true;
-                await _unitOfWork.Articles.UpdateAsync(article).ContinueWith(t => _unitOfWork.SaveAsync());
+                await _unitOfWork.Articles.UpdateAsync(article);
+                await _unitOfWork.SaveAsync();
                 return new Result(ResultStatus.Success, $"{article.Title} başlıklı makale başarıyla silindi");
 
             }
@@ -135,7 +137,8 @@ namespace ProgrammersBlog.Services.Concrete
             {
                 var article = await _unitOfWork.Articles.GetAsync(a => a.Id == articleId);
                 
-                await _unitOfWork.Articles.DeleteAsync(article).ContinueWith(t => _unitOfWork.SaveAsync());
+                await _unitOfWork.Articles.DeleteAsync(article);
+                await _unitOfWork.SaveAsync();
                 return new Result(ResultStatus.Success, $"{article.Title} başlıklı makale başarıyla db silindi");
 
             }
@@ -147,7 +150,8 @@ namespace ProgrammersBlog.Services.Concrete
             var article = _mapper.Map<Article>(articleUpdateDto);
             article.ModifiedByName = modifiedByName;
 
-            await _unitOfWork.Articles.AddAsync(article).ContinueWith(t => _unitOfWork.SaveAsync());
+            await _unitOfWork.Articles.AddAsync(article);
+            await _unitOfWork.SaveAsync();
             return new Result(ResultStatus.Success, $"{articleUpdateDto.Title} başlıklı makale başarıyla eklendi");
 
         }
