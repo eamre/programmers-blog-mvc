@@ -12,18 +12,18 @@ namespace ProgrammersBlog.Entities.DTOs
     {
         [DisplayName("Kategori Adı")]
         [Required(ErrorMessage ="{0} Bos Geçilemez")]
-        [MaxLength(70,ErrorMessage = "{0}{1} karakterden büyük olamaz")]
-        [MinLength(3, ErrorMessage = "{0}{1} karakterden küçük olamaz")]
+        [MaxLength(70,ErrorMessage = "{0} {1} karakterden büyük olamaz")]
+        [MinLength(3, ErrorMessage = "{0} {1} karakterden küçük olamaz")]
         public string Name { get; set; }
 
         [DisplayName("Kategori Açıklaması")]
-        [MaxLength(500, ErrorMessage = "{0}{1} karakterden büyük olamaz")]
-        [MinLength(3, ErrorMessage = "{0}{1} karakterden küçük olamaz")]
+        [MaxLength(500, ErrorMessage = "{0} {1} karakterden büyük olamaz")]
+        [MinLength(3, ErrorMessage = "{0} {1} karakterden küçük olamaz")]
         public string Description { get; set; }
 
         [DisplayName("Kategori Özel Not Alanı")]
-        [MaxLength(500, ErrorMessage = "{0}{1} karakterden büyük olamaz")]
-        [MinLength(3, ErrorMessage = "{0}{1} karakterden küçük olamaz")]
+        [MaxLength(500, ErrorMessage = "{0} {1} karakterden büyük olamaz")]
+        [MinLength(3, ErrorMessage = "{0} {1} karakterden küçük olamaz")]
         public string Note { get; set; }
 
         [DisplayName("Aktif mi?")]
