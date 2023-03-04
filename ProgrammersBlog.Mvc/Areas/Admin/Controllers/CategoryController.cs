@@ -58,6 +58,7 @@ namespace ProgrammersBlog.Mvc.Areas.Admin.Controllers
             });
             return Json(categoryAddAjaxErrorModel);
         }
+
         public async Task<JsonResult> GetAllCategories()
         {
             var result = await _categoryService.GetAll();
@@ -66,6 +67,15 @@ namespace ProgrammersBlog.Mvc.Areas.Admin.Controllers
                 ReferenceHandler = ReferenceHandler.Preserve
             });
             return Json(categories);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> Delete(int categoryId)
+        {
+            var result = await _categoryService.Delete(categoryId, "Emre");
+            var ajaxResult = JsonSerializer.Serialize(result);
+
+            return Json(ajaxResult);
         }
     }
 }
