@@ -97,7 +97,7 @@ namespace ProgrammersBlog.Services.Concrete
             return new Result(ResultStatus.Error, "Boyle bir kategori bulunamadı");
         }
         
-        public async Task<IResult> Delete(int categoryId, string modifiedByName)
+        public async Task<IDataResults<CategoryDto>> Delete(int categoryId, string modifiedByName)
         {
             var category = await _unitOfWork.Categories.GetAsync(c => c.Id == categoryId);
             if (category != null)
@@ -106,11 +106,21 @@ namespace ProgrammersBlog.Services.Concrete
                 category.ModifiedByName = modifiedByName;
                 category.ModifiedDate = DateTime.Now;
 
-                await _unitOfWork.Categories.UpdateAsync(category);
+                var deletedCategory = await _unitOfWork.Categories.UpdateAsync(category);
                 await _unitOfWork.SaveAsync();
-                return new Result(ResultStatus.Success, $"{category.Name} adlı kategori başarıyla silindi");
+                return new DataResult<CategoryDto>(ResultStatus.Success, $"{deletedCategory.Name} adlı kategori başarıyla silindi", new CategoryDto
+                {
+                    Category = deletedCategory,
+                    ResultStatus = ResultStatus.Success,
+                    Message = $"{deletedCategory.Name} adlı kategori başarıyla silindi"
+                });
             }
-            return new Result(ResultStatus.Error, "Boyle bir kategori bulunamadı");
+            return new DataResult<CategoryDto>(ResultStatus.Error, "Boyle bir kategori bulunamadı", new CategoryDto
+            {
+                Category = null,
+                ResultStatus = ResultStatus.Error,
+                Message = $"Boyle bir kategori bulunamadı"
+            });
         }
 
         public async Task<IDataResults<CategoryDto>> Get(int categoryId)
@@ -162,7 +172,12 @@ namespace ProgrammersBlog.Services.Concrete
                     ResultStatus = ResultStatus.Success
                 });
             }
-            return new DataResult<CategoryListDto>(ResultStatus.Error, "Hiç bir kategori bulunamadı", null);
+            return new DataResult<CategoryListDto>(ResultStatus.Error, "Hiç bir kategori bulunamadı", new CategoryListDto
+            {
+                Categories = null,
+                ResultStatus = ResultStatus.Error,
+                Message = "Hiçbir kategori bulunamadı"
+            });
         }
 
 

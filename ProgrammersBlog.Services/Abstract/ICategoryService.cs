@@ -17,7 +17,7 @@ namespace ProgrammersBlog.Services.Abstract
         Task<IDataResults<CategoryListDto>> GetAllByNonDeletedAndActive();
         Task<IDataResults<CategoryDto>> Add(CategoryAddDto categoryAddDto,string createdByName);
         Task<IDataResults<CategoryDto>> Update(CategoryUpdateDto categoryUpdateDto, string modifiedByName);
-        Task<IResult> Delete(int categoryId, string modifiedByName);
+        Task<IDataResults<CategoryDto>> Delete(int categoryId, string modifiedByName);
         Task<IResult> HardDelete(int categoryId);
 
     }
