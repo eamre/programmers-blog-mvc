@@ -44,6 +44,7 @@ namespace ProgrammersBlog.Mvc
             {
                 app.UseDeveloperExceptionPage();
                 app.UseStatusCodePages();
+                app.UseBrowserLink();
             }
             else
             {

@@ -12,6 +12,7 @@ namespace ProgrammersBlog.Services.Abstract
     public interface ICategoryService
     {
         Task<IDataResults<CategoryDto>> Get(int categoryId);
+        Task<IDataResults<CategoryUpdateDto>> GetCategoryUpdateDto(int categoryId);
         Task<IDataResults<CategoryListDto>> GetAll();
         Task<IDataResults<CategoryListDto>> GetAllByNonDeleted();
         Task<IDataResults<CategoryListDto>> GetAllByNonDeletedAndActive();

@@ -68,8 +68,8 @@ namespace ProgrammersBlog.Services.Concrete
                 //category.ModifiedDate = DateTime.Now;
 
                 //await _unitOfWork.Categories.UpdateAsync(category).ContinueWith(t=>_unitOfWork.SaveAsync());
-
-                var categoryup = _mapper.Map<Category>(categoryUpdateDto);
+                var oldCategory = await _unitOfWork.Categories.GetAsync(c => c.Id == categoryUpdateDto.Id);
+                var categoryup = _mapper.Map<CategoryUpdateDto, Category>(categoryUpdateDto, oldCategory);
                 categoryup.ModifiedByName = modifiedByName;
                 categoryup.ModifiedDate = DateTime.Now;
                 var updatedCategory=await _unitOfWork.Categories.UpdateAsync(categoryup);
@@ -78,7 +78,7 @@ namespace ProgrammersBlog.Services.Concrete
                 {
                     Category = updatedCategory,
                     ResultStatus = ResultStatus.Success,
-                    Message = $"{categoryUpdateDto.Name} adlı kategori başarıyla eklenmiştir"
+                    Message = $"{categoryUpdateDto.Name} adlı kategori başarıyla güncellendi"
                 });
 
             }
@@ -195,6 +195,19 @@ namespace ProgrammersBlog.Services.Concrete
             return new DataResult<CategoryListDto>(ResultStatus.Error, "Hiç bir kategori bulunamadı", null);
         }
 
-       
+        public async Task<IDataResults<CategoryUpdateDto>> GetCategoryUpdateDto(int categoryId)
+        {
+            var result = await _unitOfWork.Categories.AnyAsync(c => c.Id == categoryId);
+            if (result)
+            {
+                var category = await _unitOfWork.Categories.GetAsync(c => c.Id == categoryId);
+                var categoryUpdateDto = _mapper.Map<CategoryUpdateDto>(category);
+                return new DataResult<CategoryUpdateDto>(ResultStatus.Success,categoryUpdateDto);
+            }
+            else
+            {
+                return new DataResult<CategoryUpdateDto>(ResultStatus.Error, "Boyle bir kategori bulunamadı",null);
+            }
+        }
     }
 }

@@ -41,10 +41,10 @@ namespace ProgrammersBlog.Mvc.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _categoryService.Add(categoryAddDto,"Emre");
+                var result = await _categoryService.Add(categoryAddDto, "Emre");
                 if (result.ResultStatus == ResultStatus.Success)
                 {
-                    var categoryAddAjaxModel= JsonSerializer.Serialize(new CategoryAddAjaxViewModel
+                    var categoryAddAjaxModel = JsonSerializer.Serialize(new CategoryAddAjaxViewModel
                     {
                         CategoryDto = result.Data,
                         CategoryAddPartial = await this.RenderViewToStringAsync("_CategoryAddPartial", categoryAddDto)
@@ -67,6 +67,23 @@ namespace ProgrammersBlog.Mvc.Areas.Admin.Controllers
                 ReferenceHandler = ReferenceHandler.Preserve
             });
             return Json(categories);
+        }
+
+        [HttpGet]
+        public async Task< IActionResult> Update(int categoryId)
+        {
+            var result = await _categoryService.GetCategoryUpdateDto(categoryId);
+            
+            if (result.ResultStatus == ResultStatus.Success)
+            {
+                var myView =  PartialView("_CategoryUpdatePartial", result.Data);
+                return myView;
+            }
+            else
+            {
+                return NotFound();
+            }
+             
         }
 
         [HttpPost]
