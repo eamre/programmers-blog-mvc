@@ -28,8 +28,8 @@ namespace ProgrammersBlog.Mvc.Areas.Admin.Controllers
             var result = await _categoryService.GetAllByNonDeleted();
 
             return View(result.Data);
-
         }
+
         [HttpGet]
         public IActionResult Add()
         {
@@ -69,6 +69,29 @@ namespace ProgrammersBlog.Mvc.Areas.Admin.Controllers
             return Json(categories);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Update(CategoryUpdateDto categoryUpdateDto)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _categoryService.Update(categoryUpdateDto, "Emre");
+                if (result.ResultStatus == ResultStatus.Success)
+                {
+                    var categoryUpdateAjaxModel = JsonSerializer.Serialize(new CategoryUpdateAjaxViewModel
+                    {
+                        CategoryDto = result.Data,
+                        CategoryUpdatePartial = await this.RenderViewToStringAsync("_CategoryUpdatePartial", categoryUpdateDto)
+                    });
+                    return Json(categoryUpdateAjaxModel);
+                }
+            }
+            var categoryUpdateAjaxErrorModel = JsonSerializer.Serialize(new CategoryUpdateAjaxViewModel
+            {
+                CategoryUpdatePartial = await this.RenderViewToStringAsync("_CategoryUpdatePartial", categoryUpdateDto)
+            });
+            return Json(categoryUpdateAjaxErrorModel);
+        }
+
         [HttpGet]
         public async Task< IActionResult> Update(int categoryId)
         {
@@ -76,8 +99,8 @@ namespace ProgrammersBlog.Mvc.Areas.Admin.Controllers
             
             if (result.ResultStatus == ResultStatus.Success)
             {
-                var myView =  PartialView("_CategoryUpdatePartial", result.Data);
-                return myView;
+                return PartialView("_CategoryUpdatePartial", result.Data);
+
             }
             else
             {
