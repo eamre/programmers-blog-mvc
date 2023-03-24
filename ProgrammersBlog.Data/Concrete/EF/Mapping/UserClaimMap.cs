@@ -11,13 +11,13 @@ namespace ProgrammersBlog.Data.Concrete.EF.Mapping
 {
     public class UserClaimMap : IEntityTypeConfiguration<UserClaim>
     {
-        public void Configure(EntityTypeBuilder<UserClaim> b)
+        public void Configure(EntityTypeBuilder<UserClaim> builder)
         {
             // Primary key
-            b.HasKey(rc => rc.Id);
+            builder.HasKey(uc => uc.Id);
 
-            // Maps to the AspNetRoleClaims table
-            b.ToTable("AspNetRoleClaims");
+            // Maps to the AspNetUserClaims table
+            builder.ToTable("AspNetUserClaims");
         }
     }
 }
