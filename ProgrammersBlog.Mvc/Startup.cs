@@ -32,6 +32,7 @@ namespace ProgrammersBlog.Mvc
                 opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
             }
             );
+            services.AddSession();
             services.LoadMyServices();
             services.AddAutoMapper(typeof(CategoryProfile), typeof(ArticleProfile));
             services.AddRazorPages().AddRazorRuntimeCompilation();
@@ -52,12 +53,13 @@ namespace ProgrammersBlog.Mvc
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            
+            app.UseSession();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
