@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -34,6 +35,21 @@ namespace ProgrammersBlog.Mvc
             );
             services.AddSession();
             services.LoadMyServices();
+            services.ConfigureApplicationCookie(opt =>
+            {
+                opt.LoginPath = new PathString("/Admin/User/Login");
+                opt.LogoutPath = new PathString("/Admin/User/Logout");
+                opt.Cookie = new CookieBuilder
+                {
+                    Name = "ProgrammersBlog",
+                    HttpOnly = true,
+                    SameSite = SameSiteMode.Strict,
+                    SecurePolicy = CookieSecurePolicy.SameAsRequest
+                };
+                opt.SlidingExpiration = true;
+                opt.ExpireTimeSpan = System.TimeSpan.FromDays(7);
+                opt.AccessDeniedPath= new PathString("/Admin/User/AccessDenied");
+            });
             services.AddAutoMapper(typeof(CategoryProfile), typeof(ArticleProfile));
             services.AddRazorPages().AddRazorRuntimeCompilation();
         }
