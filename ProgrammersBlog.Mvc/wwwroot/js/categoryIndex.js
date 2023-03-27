@@ -105,6 +105,7 @@
         const placeHolderDiv = $('#modalPlaceHolder');
         $('#btnAdd').click(function () {
             $.get(url).done(function (data) {
+                console.log(data);
                 placeHolderDiv.html(data);
                 placeHolderDiv.find(".modal").modal('show');
             });
