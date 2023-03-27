@@ -41,7 +41,8 @@ namespace ProgrammersBlog.Entities.DTOs
         [DisplayName("Resim")]
         [Required(ErrorMessage = "{0} Bos Geçilemez")]
         [DataType(DataType.Upload)]
-        public IFormFile Picture { get; set; }
+        public IFormFile PictureFile { get; set; }
+        public string Picture { get; set; }
 
     }
 }
