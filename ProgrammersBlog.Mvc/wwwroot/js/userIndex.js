@@ -159,10 +159,10 @@
         event.preventDefault();
         const id = $(this).attr('data-id');
         const tableRow = $(`[name="${id}"]`);
-        const categoryName = tableRow.find('td:eq(1)').text();
+        const userName = tableRow.find('td:eq(1)').text();
         Swal.fire({
             title: 'Are you sure?',
-            text: `${categoryName} adlı kategori silinecektir`,
+            text: `${userName} adlı user silinecektir`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -174,24 +174,25 @@
                 $.ajax({
                     type: 'POST',
                     dataType: 'json',
-                    data: { categoryId: id },
-                    url: '/Admin/Category/Delete/',
+                    data: { userId: id },
+                    url: '/Admin/User/Delete/',
                     success: function (data) {
-                        const result = jQuery.parseJSON(data);
-                        if (result.ResultStatus === 0) {
+                        const user = jQuery.parseJSON(data);
+                        console.log(user);
+                        if (user.ResultStatus === 0) {
                             Swal.fire(
                                 'Deleted!',
-                                `${result.Category.Name} adlı kategori başarıyla delete `,
+                                `${user.User.UserName} adlı user başarıyla delete `,
                                 'success'
                             );
-                            tableRow.fadeOut(2555);
+                            //    tableRow.fadeOut(2555);
+                            dataTable.row(tableRow).remove().draw();
                         }
                         else {
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Oops...',
-                                text: `${result.Message}`,
-                                footer: '<a href="">Why do I have this issue?</a>'
+                                text: `${user.Message}`,
                             })
                         }
                     },
