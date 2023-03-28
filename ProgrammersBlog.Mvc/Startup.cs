@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using ProgrammersBlog.Mvc.AutoMapper.Profiles;
 using ProgrammersBlog.Services.Automapper.Profiles;
 using ProgrammersBlog.Services.Extensions;
 using System;
@@ -50,7 +51,7 @@ namespace ProgrammersBlog.Mvc
                 opt.ExpireTimeSpan = System.TimeSpan.FromDays(7);
                 opt.AccessDeniedPath= new PathString("/Admin/User/AccessDenied");
             });
-            services.AddAutoMapper(typeof(CategoryProfile), typeof(ArticleProfile));
+            services.AddAutoMapper(typeof(CategoryProfile), typeof(ArticleProfile), typeof(UserProfile));
             services.AddRazorPages().AddRazorRuntimeCompilation();
         }
 

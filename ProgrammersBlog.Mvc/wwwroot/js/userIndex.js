@@ -1,5 +1,5 @@
 ﻿$(document).ready(function () {
-    $('#usersTable').DataTable({
+    const dataTable = $('#usersTable').DataTable({
         dom:
             "<'row'<'col-sm-3'l><'col-sm-6 text-center'B><'col-sm-3'f>>" +
             "<'row'<'col-sm-12'tr>>" +
@@ -112,47 +112,49 @@
 
         placeHolderDiv.on('click', '#btnSave', function (event) {
             event.preventDefault();
-            const form = $('#form-category-add');
+            const form = $('#form-user-add');
             const actionUrl = form.attr('action');
-            const dataToSend = form.serialize();
-            $.post(actionUrl, dataToSend).done(function (data) {
-                const categoryAddAjaxModel = jQuery.parseJSON(data);
-                console.log(data);
-                const newFormBody = $('.modal-body', categoryAddAjaxModel.CategoryAddPartial);
-                placeHolderDiv.find('.modal-body').replaceWith(newFormBody);
-                const isValid = newFormBody.find('[name="IsValid"]').val() === 'True';
-                if (isValid) {
-                    placeHolderDiv.find('.modal').modal('hide');
-                    const newTableRow = `
-                      <tr name="${categoryAddAjaxModel.CategoryDto.Category.Id}">
-                                <td>${categoryAddAjaxModel.CategoryDto.Category.Id}</td>
-                                <td>${categoryAddAjaxModel.CategoryDto.Category.Name}</td>
-                                <td>${categoryAddAjaxModel.CategoryDto.Category.Description}</td>
-                                <td>${converFirstLetterToUpperCase(categoryAddAjaxModel.CategoryDto.Category.IsActive.toString())}</td>
-                                <td>${converFirstLetterToUpperCase(categoryAddAjaxModel.CategoryDto.Category.IsDeleted.toString())}</td>
-                                <td>${categoryAddAjaxModel.CategoryDto.Category.Note}</td>
-                                <td>${convertToShortDate(categoryAddAjaxModel.CategoryDto.Category.CreatedDate)}</td>
-                                <td>${categoryAddAjaxModel.CategoryDto.Category.CreatedByName}</td>
-                                <td>${convertToShortDate(categoryAddAjaxModel.CategoryDto.Category.ModifiedDate)}</td>
-                                <td>${categoryAddAjaxModel.CategoryDto.Category.ModifiedByName}</td>
-                                <td>
-                                   <button class="btn btn-primary btn-update" data-id="${categoryAddAjaxModel.CategoryDto.Category.Id}><span class="fas fa-edit"></span> Düzenle</button>
-                                   <button class="btn btn-danger btn-delete" data-id="${categoryAddAjaxModel.CategoryDto.Category.Id}"><span class="fas fa-minus-circle"></span> Sil</button>
-                                </td>
-                      </tr>`;
-                    const newTableRowObject = $(newTableRow);
-                    newTableRowObject.hide();
-                    $('#categoriesTable').append(newTableRowObject);
-                    newTableRowObject.fadeIn(2000);
-                    toastr.success(`${categoryAddAjaxModel.CategoryDto.Message}`, 'Başarılı!');
-                }
-                else {
-                    let summaryText = "";
-                    $('#validation-summary>ul>li').each(function () {
-                        let text = $(this).text();
-                        summaryText = `*${text}\n`;
-                    });
-                    toastr.warning(summaryText);
+            const dataToSend = new FormData(form.get(0));
+            $.ajax({
+                type: 'POST',
+                url: actionUrl,
+                data: dataToSend,
+                processData:false,
+                contentType: false,
+                
+                success: function (data) {
+                    const userAddAjaxModel = jQuery.parseJSON(data);
+                    console.log(data);
+                    const newFormBody = $('.modal-body', userAddAjaxModel.UserAddPartial);
+                    placeHolderDiv.find('.modal-body').replaceWith(newFormBody);
+                    const isValid = newFormBody.find('[name="IsValid"]').val() === 'True';
+                    if (isValid) {
+                        placeHolderDiv.find('.modal').modal('hide');
+                        dataTable.row.add([
+                            userAddAjaxModel.UserDto.User.Id,
+                            userAddAjaxModel.UserDto.User.UserName,
+                            userAddAjaxModel.UserDto.User.Email,
+                            userAddAjaxModel.UserDto.User.PhoneNumber,
+                            ` <img src="/img/${userAddAjaxModel.UserDto.User.Picture}" alt="${userAddAjaxModel.UserDto.User.UserName}" style="max-height:50px; max-width:50px" />`,
+                            `<td>
+                                <button class="btn btn-primary btn-block btn-update" data-id=userAddAjaxModel.UserDto.User.Id"><span class="fas fa-edit"></span> Düzenle</button>
+                                <button class="btn btn-danger btn-block btn-delete" data-id="userAddAjaxModel.UserDto.User.Id"><span class="fas fa-minus-circle"></span> Sil</button>
+                            </td>`
+                        ]).draw();
+                        
+                        toastr.success(`${userAddAjaxModel.UserDto.Message}`, 'Başarılı!');
+                    }
+                    else {
+                        let summaryText = "";
+                        $('#validation-summary>ul>li').each(function () {
+                            let text = $(this).text();
+                            summaryText = `*${text}\n`;
+                        });
+                        toastr.warning(summaryText);
+                    }
+                },
+                error: function (err) {
+                    console.log(err)
                 }
             })
         })
