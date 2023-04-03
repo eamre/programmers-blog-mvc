@@ -208,7 +208,7 @@
     });
 
     $(function () {
-        const url = '/Admin/Category/Update/';
+        const url = '/Admin/User/Update/';
         const placeHolderDiv = $('#modalPlaceHolder');
         $(document).on('click', '.btn-update', function (event) {
             event.preventDefault();
@@ -223,7 +223,7 @@
         /* yeni kod-category-update*/
         placeHolderDiv.on('click', '#btnUpdate', function (e) {
             e.preventDefault();
-            const form = $('#form-category-update');
+            const form = $('#form-user-update');
             const actionUrl = form.attr('action');
             const dataToSend = form.serialize();
             $.post(actionUrl, dataToSend).done(function (data) {
