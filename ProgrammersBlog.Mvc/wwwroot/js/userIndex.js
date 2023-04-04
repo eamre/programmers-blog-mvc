@@ -206,14 +206,14 @@
             }
         })
     });
-
+    //user update get
     $(function () {
         const url = '/Admin/User/Update/';
         const placeHolderDiv = $('#modalPlaceHolder');
         $(document).on('click', '.btn-update', function (event) {
             event.preventDefault();
             const id = $(this).attr('data-id');
-            $.get(url, { categoryId: id }).done(function (data) {
+            $.get(url, { userId: id }).done(function (data) {
                 placeHolderDiv.html(data);
                 placeHolderDiv.find('.modal').modal('show');
             }).fail(function () {

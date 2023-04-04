@@ -35,6 +35,7 @@ namespace ProgrammersBlog.Mvc.Areas.Admin.Controllers
         public async Task<IActionResult> Index()
         {
             var users = await _userManager.Users.ToListAsync();
+            ImageDelete("test");
             return View(new UserListDto 
             { 
                  Users=users,
@@ -141,6 +142,14 @@ namespace ProgrammersBlog.Mvc.Areas.Admin.Controllers
             }
         }
 
+        public async Task<PartialViewResult> Update(int userId)
+        {
+            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            var userUpdateDto = _mapper.Map<UserUpdateDto>(user);
+
+            return PartialView("_UserUpdatePartial", userUpdateDto);
+        }
+
         public async Task<string> ImageUpload(UserAddDto userAddDto)
         {
             string wwwroot = _env.WebRootPath;//dosya yolu veriyo
@@ -154,6 +163,18 @@ namespace ProgrammersBlog.Mvc.Areas.Admin.Controllers
                 await userAddDto.PictureFile.CopyToAsync(stream);
             }
             return fileName;
+        }
+
+        public bool ImageDelete(string pictureName)
+        {
+            string wwwroot = _env.WebRootPath;//dosya yolu veriyo
+            var fileToDelete = Path.Combine($"{wwwroot}/img", pictureName);
+            if (System.IO.File.Exists(fileToDelete))//böyle bi dosya var mı
+            {
+                System.IO.File.Delete(fileToDelete);
+                return true;
+            }
+            return false;
         }
     }
 }
