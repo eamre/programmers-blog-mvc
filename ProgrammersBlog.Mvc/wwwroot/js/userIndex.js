@@ -234,10 +234,14 @@ $(document).ready(function () {
                 processData: false,
                 contentType: false,
                 success: function (data) {
+                    let id = null;
                     console.log(data);
                     const userUpdateAjaxModel = jQuery.parseJSON(data);
                     console.log(userUpdateAjaxModel);
-                    const id = userUpdateAjaxModel.UserUpdateDto.Id;
+                    if (userUpdateAjaxModel.UserUpdateDto == null) {
+                        id = userUpdateAjaxModel.UserDto.User.Id;
+                    }
+                    else {id = userUpdateAjaxModel.UserUpdateDto.Id;}
                     const tableRow = $(`[name="${id}"]`);
                     const newFormBody = $('.modal-body', userUpdateAjaxModel.UserUpdatePartial);
                     placeHolderDiv.find('.modal-body').replaceWith(newFormBody);
