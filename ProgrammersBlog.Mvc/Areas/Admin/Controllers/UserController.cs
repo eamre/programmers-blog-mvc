@@ -166,7 +166,7 @@ namespace ProgrammersBlog.Mvc.Areas.Admin.Controllers
                     userUpdateDto.Picture = await ImageUpload(userUpdateDto.UserName,userUpdateDto.PictureFile);
                     isNewPictureUploaded = true;
                 }
-
+                
                 var updatedUser = _mapper.Map<UserUpdateDto, User>(userUpdateDto, oldUser);//UserUpdateDto verip user alıo
                 var result = await _userManager.UpdateAsync(updatedUser);
 
