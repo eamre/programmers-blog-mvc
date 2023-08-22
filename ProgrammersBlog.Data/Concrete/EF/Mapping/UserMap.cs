@@ -62,7 +62,7 @@ namespace ProgrammersBlog.Data.Concrete.EF.Mapping
                 Picture = "defaultUser.png",
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true,
-                SecurityStamp = new Guid().ToString()
+                SecurityStamp = Guid.NewGuid().ToString()
 
             };
             adminUser.PasswordHash = CreatePasswordHash(adminUser, "adminuser");
@@ -78,10 +78,10 @@ namespace ProgrammersBlog.Data.Concrete.EF.Mapping
                 Picture = "defaultUser.png",
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true,
-                SecurityStamp = new Guid().ToString()
+                SecurityStamp = Guid.NewGuid().ToString()
 
             };
-            adminUser.PasswordHash = CreatePasswordHash(editorUser, "editoruser");
+            editorUser.PasswordHash = CreatePasswordHash(editorUser, "editoruser");
 
             b.HasData(adminUser, editorUser);
         }
