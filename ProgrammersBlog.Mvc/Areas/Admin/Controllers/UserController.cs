@@ -85,6 +85,7 @@ namespace ProgrammersBlog.Mvc.Areas.Admin.Controllers
                 return View("UserLogin");
             }
         }
+
         [Authorize]
         [HttpGet]
         public async Task<IActionResult> Logout()
@@ -270,6 +271,102 @@ namespace ProgrammersBlog.Mvc.Areas.Admin.Controllers
 
                 return Json(userUpdateModelStateErrorViewModel);
             }
+        }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<ViewResult> ChangeDetails()
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var updateDto = _mapper.Map<UserUpdateDto>(user);
+            return View(updateDto);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<ViewResult> ChangeDetails(UserUpdateDto userUpdateDto)
+        {
+            if (ModelState.IsValid)
+            {
+                bool isNewPictureUploaded = false;
+                var oldUser = await _userManager.GetUserAsync(HttpContext.User);
+                var oldUserPicture = oldUser.Picture;
+
+                if (userUpdateDto.PictureFile != null)
+                {
+                    userUpdateDto.Picture = await ImageUpload(userUpdateDto.UserName, userUpdateDto.PictureFile);
+                    if(oldUserPicture != "defaultUser.png")
+                    {
+                        isNewPictureUploaded = true;
+                    }
+                }
+
+                var updatedUser = _mapper.Map<UserUpdateDto, User>(userUpdateDto, oldUser);//UserUpdateDto verip user alıo
+                var result = await _userManager.UpdateAsync(updatedUser);
+
+                if (result.Succeeded)
+                {
+                    if (isNewPictureUploaded)
+                    {
+                        ImageDelete(oldUserPicture);
+                    }
+                    TempData.Add("SuccessMessage", $"{ updatedUser.UserName } adlı kullanıcı başarıyla güncellendi");
+                    return View(userUpdateDto);
+                }
+                else
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+
+                    return View(userUpdateDto);
+                }
+            }
+            else
+            {
+                return View(userUpdateDto);
+            }
+        }
+
+        [HttpGet]
+        [Authorize]
+        public ViewResult PasswordChange()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<ViewResult> PasswordChange(UserPasswordChangeDto userPasswordChangeDto)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.GetUserAsync(HttpContext.User);
+                var isVerified = await _userManager.CheckPasswordAsync(user, userPasswordChangeDto.CurrentPassword);
+                if (isVerified)
+                {
+                    var result = await _userManager.ChangePasswordAsync(user, userPasswordChangeDto.CurrentPassword, userPasswordChangeDto.NewPassword);
+                    if (result.Succeeded)
+                    {
+                        await _userManager.UpdateSecurityStampAsync(user);
+                        await _signInManager.SignOutAsync();
+                        await _signInManager.PasswordSignInAsync(user, userPasswordChangeDto.NewPassword, true, false);
+                        TempData.Add("SuccessMessage", $"şifreniz başarıyla güncellendi");
+                        return View();
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Lütfen girmiş olduğunuz şifrenizi kontrol ediniz");
+                    return View(userPasswordChangeDto);
+                }
+            }
+            else
+            {
+                return View(userPasswordChangeDto);
+            }
+            return View();
         }
 
         [HttpGet]
