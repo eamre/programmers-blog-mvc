@@ -6,6 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ProgrammersBlog.Mvc.AutoMapper.Profiles;
+using ProgrammersBlog.Mvc.Helpers.Abstract;
+using ProgrammersBlog.Mvc.Helpers.Concrete;
 using ProgrammersBlog.Services.Automapper.Profiles;
 using ProgrammersBlog.Services.Extensions;
 using System;
@@ -36,6 +38,7 @@ namespace ProgrammersBlog.Mvc
             );
             services.AddSession();
             services.LoadMyServices();
+            services.AddScoped<IImageHelper, ImageHelper>();
             services.ConfigureApplicationCookie(opt =>
             {
                 opt.LoginPath = new PathString("/Admin/User/Login");
