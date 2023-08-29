@@ -156,6 +156,7 @@ $(document).ready(function () {
                 },
                 error: function (err) {
                     console.log(err)
+                    toastr.error(`${err.responseText}`, 'Hata');
                 }
             })
         })
@@ -221,8 +222,8 @@ $(document).ready(function () {
             $.get(url, { userId: id }).done(function (data) {
                 placeHolderDiv.html(data);
                 placeHolderDiv.find('.modal').modal('show');
-            }).fail(function () {
-                toastr.error("Bir hata oluştu.")
+            }).fail(function (err) {
+                toastr.error(`${err.responseText}`, 'Hata');
             });
         });
         /* yeni kod-user-update*/
@@ -238,15 +239,15 @@ $(document).ready(function () {
                 processData: false,
                 contentType: false,
                 success: function (data) {
-                    let id = null;
+                    let id;
+                    let tableRow;
                     console.log(data);
                     const userUpdateAjaxModel = jQuery.parseJSON(data);
                     console.log(userUpdateAjaxModel);
-                    if (userUpdateAjaxModel.UserUpdateDto == null) {
+                    if (userUpdateAjaxModel.UserDto !== null) {
                         id = userUpdateAjaxModel.UserDto.User.Id;
+                        tableRow = $(`[name="${id}"]`);
                     }
-                    else {id = userUpdateAjaxModel.UserUpdateDto.Id;}
-                    const tableRow = $(`[name="${id}"]`);
                     const newFormBody = $('.modal-body', userUpdateAjaxModel.UserUpdatePartial);
                     placeHolderDiv.find('.modal-body').replaceWith(newFormBody);
                     const isValid = newFormBody.find('[name="IsValid"]').val() === 'True';
@@ -277,6 +278,7 @@ $(document).ready(function () {
                 },
                 error: function (error) {
                     console.log(error);
+                    toastr.error(`${error.responseText}`, 'Hata');
                 }
             });
         });
