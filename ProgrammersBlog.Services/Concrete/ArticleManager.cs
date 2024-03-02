@@ -3,6 +3,7 @@ using ProgrammersBlog.Data.Abstract;
 using ProgrammersBlog.Entities.Concrete;
 using ProgrammersBlog.Entities.DTOs;
 using ProgrammersBlog.Services.Abstract;
+using ProgrammersBlog.Services.Utilities;
 using ProgrammersBlog.Shared.Utilities.Results.Abstract;
 using ProgrammersBlog.Shared.Utilities.Results.complexTypes;
 using ProgrammersBlog.Shared.Utilities.Results.Concrete;
@@ -34,7 +35,7 @@ namespace ProgrammersBlog.Services.Concrete
 
             await _unitOfWork.Articles.AddAsync(article);
             await _unitOfWork.SaveAsync();
-            return new Result(ResultStatus.Success, $"{articleAddDto.Title} başlıklı makale başarıyla eklendi");
+            return new Result(ResultStatus.Success, Messages.Article.Add(article.Title));
         }
 
         public async Task<IResult> Delete(int articleId, string modifiedByName)
@@ -48,10 +49,10 @@ namespace ProgrammersBlog.Services.Concrete
                 article.IsDeleted = true;
                 await _unitOfWork.Articles.UpdateAsync(article);
                 await _unitOfWork.SaveAsync();
-                return new Result(ResultStatus.Success, $"{article.Title} başlıklı makale başarıyla silindi");
+                return new Result(ResultStatus.Success, Messages.Article.Delete(article.Title));
 
             }
-            return new Result(ResultStatus.Error, "böyle bir makale bulunamadı");
+            return new Result(ResultStatus.Error, Messages.Article.NotFound(false));
         }
 
         public async Task<IDataResults<ArticleDto>> Get(int articleId)
@@ -64,7 +65,7 @@ namespace ProgrammersBlog.Services.Concrete
                     ResultStatus=ResultStatus.Success
                 });
             }
-            return new DataResult<ArticleDto>(ResultStatus.Error, "Böyle bir makale bulunamadı",null );
+            return new DataResult<ArticleDto>(ResultStatus.Error, Messages.Article.NotFound(false), null );
         }
 
         public async Task<IDataResults<ArticleListDto>> GetAll()
@@ -78,7 +79,7 @@ namespace ProgrammersBlog.Services.Concrete
                     ResultStatus = ResultStatus.Success
                 });
             }
-            return new DataResult<ArticleListDto>(ResultStatus.Error, "Böyle bir makale bulunamadı", null);
+            return new DataResult<ArticleListDto>(ResultStatus.Error, Messages.Article.NotFound(true), null);
         }
 
         public async Task<IDataResults<ArticleListDto>> GetAllByCategory(int categoryId)
@@ -97,9 +98,9 @@ namespace ProgrammersBlog.Services.Concrete
                         ResultStatus = ResultStatus.Success
                     });
                 }
-                return new DataResult<ArticleListDto>(ResultStatus.Error, "Böyle bir makale bulunamadı", null);
+                return new DataResult<ArticleListDto>(ResultStatus.Error, Messages.Article.NotFound(true), null);
             }
-            return new DataResult<ArticleListDto>(ResultStatus.Error, "Böyle bir kategori bulunamadı", null);
+            return new DataResult<ArticleListDto>(ResultStatus.Error, Messages.Article.NotFound(false), null);
         }
 
         public async Task<IDataResults<ArticleListDto>> GetAllByNonDeleted()
@@ -113,7 +114,7 @@ namespace ProgrammersBlog.Services.Concrete
                     ResultStatus = ResultStatus.Success
                 });
             }
-            return new DataResult<ArticleListDto>(ResultStatus.Error, "Böyle bir makale bulunamadı", null);
+            return new DataResult<ArticleListDto>(ResultStatus.Error, Messages.Article.NotFound(true), null);
         }
 
         public async Task<IDataResults<ArticleListDto>> GetAllByNonDeletedAndActive()
@@ -127,7 +128,7 @@ namespace ProgrammersBlog.Services.Concrete
                     ResultStatus = ResultStatus.Success
                 });
             }
-            return new DataResult<ArticleListDto>(ResultStatus.Error, "Böyle bir makale bulunamadı", null);
+            return new DataResult<ArticleListDto>(ResultStatus.Error, Messages.Article.NotFound(true), null);
         }
 
         public async Task<IResult> HardDelete(int articleId)
@@ -139,10 +140,10 @@ namespace ProgrammersBlog.Services.Concrete
                 
                 await _unitOfWork.Articles.DeleteAsync(article);
                 await _unitOfWork.SaveAsync();
-                return new Result(ResultStatus.Success, $"{article.Title} başlıklı makale başarıyla db silindi");
+                return new Result(ResultStatus.Success, Messages.Article.HardDelete(article.Title));
 
             }
-            return new Result(ResultStatus.Error, "böyle bir makale bulunamadı");
+            return new Result(ResultStatus.Error, Messages.Article.NotFound(false));
         }
 
         public async Task<IResult> Update(ArticleUpdateDto articleUpdateDto, string modifiedByName)
@@ -152,7 +153,7 @@ namespace ProgrammersBlog.Services.Concrete
 
             await _unitOfWork.Articles.AddAsync(article);
             await _unitOfWork.SaveAsync();
-            return new Result(ResultStatus.Success, $"{articleUpdateDto.Title} başlıklı makale başarıyla eklendi");
+            return new Result(ResultStatus.Success, Messages.Article.Update(article.Title));
 
         }
     }
